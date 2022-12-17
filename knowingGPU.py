@@ -1,5 +1,4 @@
-from numba import cuda
-from numba import numba
+from numba import cuda, numba
 
 gpus = cuda.gpus.lst
 num_cores = numba.config.NUMBA_DEFAULT_NUM_THREADS
