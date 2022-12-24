@@ -5,7 +5,7 @@ import matplotlib.image as mpimg
 import time
 
 # get the image
-root = mpimg.imread('/content/cute-cat.jpg')
+root = mpimg.imread('cute-cat.jpg')
 imgplot = plt.imshow(root)
 plt.show()
 print("----------------------------------------")
