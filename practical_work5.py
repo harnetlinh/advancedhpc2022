@@ -60,7 +60,4 @@ plt.show()
 
 print("----------------------------------------")
 
-
-
-
-
+# convolve RGB image with gaussian_kernel function using GPU 
