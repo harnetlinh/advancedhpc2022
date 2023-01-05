@@ -50,6 +50,8 @@ def kuwahara_filter_hsv(src, dst, v, window_size):
 
     # first region  rx1 belongs to [tidx - window_size, tidx] and ry1 belongs to [tidy - window_size, tidy]
     sum1 = np.float32(0)
+    mean1 = np.float32(0)
+    std1 = np.float32(0)
     for rx1 in range(tidx - window_size + 1, tidx + 1): # + 1 for the border
         for ry1 in range(tidy - window_size + 1, tidy + 1): # + 1 for the border
             if rx1 >= 0 and ry1 >= 0 and rx1 < h and ry1 < w:
@@ -65,6 +67,8 @@ def kuwahara_filter_hsv(src, dst, v, window_size):
 
     # second region  rx2 belongs to [tidx, tidx + window_size] and ry2 belongs to [tidy - window_size, tidy]
     sum2 = np.float32(0)
+    mean2 = np.float32(0)
+    std2 = np.float32(0)
     for rx2 in range(tidx, tidx + window_size): # + 1 for the border
         for ry2 in range(tidy - window_size + 1, tidy + 1): # + 1 for the border
             if rx2 >= 0 and ry2 >= 0 and rx2 < h and ry2 < w:
@@ -80,6 +84,8 @@ def kuwahara_filter_hsv(src, dst, v, window_size):
 
     # third region  rx3 belongs to [tidx - window_size, tidx] and ry3 belongs to [tidy, tidy + window_size]
     sum3 = np.float32(0)
+    mean3 = np.float32(0)
+    std3 = np.float32(0)
     for rx3 in range(tidx - window_size + 1, tidx + 1): # + 1 for the border
         for ry3 in range(tidy, tidy + window_size): # + 1 for the border
             if rx3 >= 0 and ry3 >= 0 and rx3 < h and ry3 < w:
@@ -95,6 +101,8 @@ def kuwahara_filter_hsv(src, dst, v, window_size):
 
     # fourth region  rx4 belongs to [tidx, tidx + window_size] and ry4 belongs to [tidy, tidy + window_size]
     sum4 = np.float32(0)
+    mean4 = np.float32(0)
+    std4 = np.float32(0)
     for rx4 in range(tidx, tidx + window_size): # + 1 for the border
         for ry4 in range(tidy, tidy + window_size): # + 1 for the border
             if rx4 >= 0 and ry4 >= 0 and rx4 < h and ry4 < w:
