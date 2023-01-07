@@ -68,7 +68,7 @@ def kuwahara_filter_hsv(src, v, window_size):
             for rx1 in range(tidx - window_size, tidx): 
                 for ry1 in range(tidy - window_size, tidy): 
                     if rx1 >= 0 and ry1 >= 0 and rx1 < height and ry1 < width:
-                        sum1 += (v[rx1, ry1] - mean1) * (v[rx1, ry1] - mean1)
+                        sum1 += (v[rx1, ry1] - mean1) ** 2
             std1 = math.sqrt(sum1 / ((window_size) * (window_size)))
 
             # second region  rx2 belongs to [tidx, tidx + window_size] and ry2 belongs to [tidy - window_size, tidy]
@@ -83,7 +83,7 @@ def kuwahara_filter_hsv(src, v, window_size):
             for rx2 in range(tidx, tidx + window_size): 
                 for ry2 in range(tidy - window_size, tidy): 
                     if rx2 >= 0 and ry2 >= 0 and rx2 < height and ry2 < width:
-                        sum2 += (v[rx2, ry2] - mean2) * (v[rx2, ry2] - mean2)
+                        sum2 += (v[rx2, ry2] - mean2) ** 2
             std2 = math.sqrt(sum2 / ((window_size) * (window_size)))
 
             # third region  rx3 belongs to [tidx - window_size, tidx] and ry3 belongs to [tidy, tidy + window_size]
@@ -98,7 +98,7 @@ def kuwahara_filter_hsv(src, v, window_size):
             for rx3 in range(tidx - window_size, tidx):
                 for ry3 in range(tidy, tidy + window_size):
                     if rx3 >= 0 and ry3 >= 0 and rx3 < height and ry3 < width:
-                        sum3 += (v[rx3, ry3] - mean3) * (v[rx3, ry3] - mean3)
+                        sum3 += (v[rx3, ry3] - mean3) ** 2
             std3 = math.sqrt(sum3 / ((window_size) * (window_size)))
 
             # fourth region  rx4 belongs to [tidx, tidx + window_size] and ry4 belongs to [tidy, tidy + window_size]
@@ -113,7 +113,7 @@ def kuwahara_filter_hsv(src, v, window_size):
             for rx4 in range(tidx, tidx + window_size):
                 for ry4 in range(tidy, tidy + window_size):
                     if rx4 >= 0 and ry4 >= 0 and rx4 < height and ry4 < width:
-                        sum4 += (v[rx4, ry4] - mean4) * (v[rx4, ry4] - mean4)
+                        sum4 += (v[rx4, ry4] - mean4) ** 2
             std4 = math.sqrt(sum4 / ((window_size) * (window_size)))
 
             # find minimum standard deviation
@@ -164,7 +164,7 @@ def kuwahara_filter_hsv(src, v, window_size):
     return dst
 
 # display kuwahara filtered image
-v = hsv[:, :, 2]
+v = hsv[:, :, 2] / 255.0
 filtered = kuwahara_filter_hsv(root, v, 3)
 imgplot = plt.imshow(filtered)
 plt.show()

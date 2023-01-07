@@ -109,8 +109,6 @@ def kuwahara_filter_hsv(src, dst, v, window_size):
                 sum4 += (v[rx4, ry4] - mean4) ** 2
     std4 = (math.sqrt(sum4 / ((window_size) * (window_size))))
     
-    print(std1, std2, std3, std4)
-
     # # find the region with the lowest standard deviation
     min_std = min(std1, std2, std3, std4)
 
