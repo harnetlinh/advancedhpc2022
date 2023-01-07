@@ -1,0 +1,118 @@
+\documentclass{article}
+
+\usepackage[english]{babel}
+\usepackage{gensymb}
+\usepackage[letterpaper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+\usepackage{listings}
+
+% Useful packages
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+
+\title{Report Advanced Programming for HPC}
+\author{Ha Ngoc Linh - M21.ICT006}
+
+\begin{document}
+\maketitle
+
+\section{Formula}
+\subsection{RGB to HSV}
+\begin{equation}
+H = \begin{cases}
+0 \degree &\text{ $\Delta\ =  0$}\\
+60 \degree \times \frac{G - B}{\Delta}mod 6 &\text{ $max\ =  R$}\\
+60 \degree \times \frac{B - R}{\Delta} + 2 &\text{ $max\ =  G$}\\
+60 \degree \times \frac{R - G}{\Delta} + 4 &\text{ $max\ =  B$}\\
+\end{cases}
+\end{equation}
+
+\begin{equation}
+S = \begin{cases}
+0  &\text{ $\max =  0$}\\
+\frac{\Delta}{max} &\text{ $max\ \neq  0$}\\
+\end{cases}
+\end{equation}
+
+\begin{equation}
+V = max
+\end{equation}
+
+\subsection{Kuwahara filter}
+
+\begin{enumerate}
+
+\item Get V value in HSV space of the image.
+\item Define window size (region size) ({\omega}).
+
+\item In each region:
+
+    \begin{itemize}
+    
+        \item Calculate the summary value of all pixels in the region to get the mean value 
+        \begin{equation}
+            mean = \frac{\sum r(x,y)}{\omega \times \omega}
+        \end{equation}
+        \item Calculate the standard deviation of the region i
+        \begin{equation}
+            std_i = \sqrt{\frac{\sum ((V(x,y) - mean)^2)}{\omega \times \omega}}
+        \end{equation}
+    
+    \end{itemize}
+
+\item Find the minimum value in 4 standard deviation values (4 regions)
+
+\item Assign mean(R,G,B) value of this region as new color
+    \begin{equation}
+        R = avg_R = \frac{\sum(R(x,y)}{\omega \times \omega}
+    \end{equation}
+    \begin{equation}
+        B = avg_B = \frac{\sum(B(x,y)}{\omega \times \omega}
+    \end{equation}
+    \begin{equation}
+        G = avg_G = \frac{\sum(G(x,y)}{\omega \times \omega}
+    \end{equation}
+
+\end{itemize}
+
+\end{enumerate}
+
+\section{Kuwahara filter in CPU}
+
+\subsection{Transfer RGB to HSV in CPU}
+
+To transfer RGB to HSV, I follow the formula (1), (2), (3) on each pixel of the image:
+\begin{lstlisting}[language=Python]
+    height, width = src.shape[0], src.shape[1]
+    for tidx in range(height):
+       for tidy in range(width):
+\end{lstlisting}
+I calculate H, S, V values of each pixel by following this code:
+\begin{lstlisting}[language=Python]
+            b = src[tidx, tidy, 0] / 255
+            g = src[tidx, tidy, 1] / 255
+            r = src[tidx, tidy, 2] / 255
+            cmax = max(r, g, b)
+            cmin = min(r, g, b)
+            delta = cmax - cmin
+            if delta == 0:
+                h = 0
+            elif cmax == r:
+                h = ((((g - b) / delta) % 6) * 60)  % 360
+            elif cmax == g:
+                h = ((((b - r) / delta) + 2) * 60) % 360
+            elif cmax == b:
+                h = ((((r - g) / delta) + 4) * 60) % 360
+            if cmax == 0:
+                s = 0
+            else:
+                s = delta / cmax
+            v = cmax
+
+            dst[tidx, tidy, 0] = h % 360
+            dst[tidx, tidy, 1] = s * 100
+            dst[tidx, tidy, 2] = v * 100
+\end{lstlisting}
+
+\subsection{Kuwahara filter function in CPU}
+Following each step defined in section 1.2
