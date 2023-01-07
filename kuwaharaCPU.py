@@ -15,7 +15,7 @@ print("----------------------------------------")
 # convert RGB image to HSV image with numpy and matplotlib
 def rgb_to_hsv(src):
     height, width = src.shape[0], src.shape[1]
-    dst = np.zeros((height, width, 3))
+    dst = np.zeros((height, width, 3), dtype=np.uint8)
     for tidx in range(height):
         for tidy in range(width):
             b = src[tidx, tidy, 0] / 255
