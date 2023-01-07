@@ -27,23 +27,24 @@ def rgb_to_hsv(src):
             if delta == 0:
                 h = 0
             elif cmax == r:
-                h = 60 * (((g - b) / delta) % 6)
+                h = ((((g - b) / delta) % 6) * 60)  % 360
             elif cmax == g:
-                h = 60 * (((b - r) / delta) + 2)
+                h = ((((b - r) / delta) + 2) * 60) % 360
             elif cmax == b:
-                h = 60 * (((r - g) / delta) + 4)
+                h = ((((r - g) / delta) + 4) * 60) % 360
             if cmax == 0:
                 s = 0
             else:
                 s = delta / cmax
             v = cmax
-            dst[tidx, tidy, 0] = h
-            dst[tidx, tidy, 1] = s
-            dst[tidx, tidy, 2] = v
+
+            dst[tidx, tidy, 0] = h % 360
+            dst[tidx, tidy, 1] = s * 100
+            dst[tidx, tidy, 2] = v * 100
+
     return dst
 
 # display HSV image
 hsv = rgb_to_hsv(root)
 imgplot = plt.imshow(hsv)
 plt.show()
-print("----------------------------------------")

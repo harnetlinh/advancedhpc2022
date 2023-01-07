@@ -17,28 +17,29 @@ print("----------------------------------------")
 def rgb_to_hsv(src, dst):
     tidx = cuda.threadIdx.x + cuda.blockIdx.x * cuda.blockDim.x
     tidy = cuda.threadIdx.y + cuda.blockIdx.y * cuda.blockDim.y
-    b = src[tidx, tidy, 0]
-    g = src[tidx, tidy, 1]
-    r = src[tidx, tidy, 2]
+    b = src[tidx, tidy, 0] / 255
+    g = src[tidx, tidy, 1] / 255
+    r = src[tidx, tidy, 2] / 255
     cmax = max(r, g, b)
     cmin = min(r, g, b)
     delta = cmax - cmin
     if delta == 0:
         h = 0
     elif cmax == r:
-        h = 60 * (((g - b) / delta) % 6)
+        h = ((((g - b) / delta) % 6) * 60)  % 360
     elif cmax == g:
-        h = 60 * (((b - r) / delta) + 2)
+        h = ((((b - r) / delta) + 2) * 60) % 360
     elif cmax == b:
-        h = 60 * (((r - g) / delta) + 4)
+        h = ((((r - g) / delta) + 4) * 60) % 360
     if cmax == 0:
         s = 0
     else:
         s = delta / cmax
     v = cmax
-    dst[tidx, tidy, 0] = h
-    dst[tidx, tidy, 1] = s
-    dst[tidx, tidy, 2] = v
+
+    dst[tidx, tidy, 0] = h % 360
+    dst[tidx, tidy, 1] = s * 100
+    dst[tidx, tidy, 2] = v * 100
 
 
 # create kuwahara filter with window size variable as input and v in hsv color space as input
