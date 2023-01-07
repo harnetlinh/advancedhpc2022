@@ -128,43 +128,52 @@ def kuwahara_filter_hsv(src, v, window_size):
                 for rx1 in range(tidx - window_size, tidx): 
                     for ry1 in range(tidy - window_size, tidy): 
                         if rx1 >= 0 and ry1 >= 0 and rx1 < height and ry1 < width:
-                            avg_r += src[rx1, ry1, 0]
+                            avg_r += src[rx1, ry1, 2]
                             avg_g += src[rx1, ry1, 1]
-                            avg_b += src[rx1, ry1, 2]
+                            avg_b += src[rx1, ry1, 0]
             if min_std == std2:
                 for rx2 in range(tidx, tidx + window_size): 
                     for ry2 in range(tidy - window_size, tidy): 
                         if rx2 >= 0 and ry2 >= 0 and rx2 < height and ry2 < width:
-                            avg_r += src[rx2, ry2, 0]
+                            avg_r += src[rx2, ry2, 2]
                             avg_g += src[rx2, ry2, 1]
-                            avg_b += src[rx2, ry2, 2]
+                            avg_b += src[rx2, ry2, 0]
 
             if min_std == std3:
                 for rx3 in range(tidx - window_size, tidx): 
                     for ry3 in range(tidy, tidy + window_size): 
                         if rx3 >= 0 and ry3 >= 0 and rx3 < height and ry3 < width:
-                            avg_r += src[rx3, ry3, 0]
+                            avg_r += src[rx3, ry3, 2]
                             avg_g += src[rx3, ry3, 1]
-                            avg_b += src[rx3, ry3, 2]
+                            avg_b += src[rx3, ry3, 0]
 
             if min_std == std4:
                 for rx4 in range(tidx, tidx + window_size): 
                     for ry4 in range(tidy, tidy + window_size): 
                         if rx4 >= 0 and ry4 >= 0 and rx4 < height and ry4 < width:
-                            avg_r += src[rx4, ry4, 0]
+                            avg_r += src[rx4, ry4, 2]
                             avg_g += src[rx4, ry4, 1]
-                            avg_b += src[rx4, ry4, 2]
+                            avg_b += src[rx4, ry4, 0]
 
-            dst[tidx, tidy, 0] = avg_r / (window_size * window_size)
-            dst[tidx, tidy, 1] = avg_g / (window_size * window_size)
-            dst[tidx, tidy, 2] = avg_b / (window_size * window_size)
+            avg_r = avg_r / (window_size * window_size)
+            avg_g = avg_g / (window_size * window_size)
+            avg_b = avg_b / (window_size * window_size)
 
-            return dst
+            dst[tidx, tidy, 2] = avg_r
+            dst[tidx, tidy, 1] = avg_g
+            dst[tidx, tidy, 0] = avg_b
 
     return dst
 
 # display kuwahara filtered image
-v = hsv[:, :, 2] / 255.0
-filtered = kuwahara_filter_hsv(root, v, 3)
+v = hsv[:, :, 2]
+# start timer
+start = time.time()
+filtered = kuwahara_filter_hsv(root, v, 8)
+# end timer
+end = time.time()
+print("Time taken for kuwahara filter in CPU: ", end - start)
 imgplot = plt.imshow(filtered)
+# save image
+plt.imsave('cute-cat-kuwahara_cpu.jpg', filtered)
 plt.show()

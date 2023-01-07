@@ -5,7 +5,6 @@ import matplotlib.image as mpimg
 import time
 import math
 
-
 # get the image
 root = mpimg.imread('cute-cat.jpg')
 imgplot = plt.imshow(root)
@@ -174,9 +173,13 @@ v = hsv_image[:, :, 2]
 output_cuda_image_data = cuda.device_array(np.shape(gpu_img), np.uint8)
 
 v = np.ascontiguousarray(v)
-
+# start timer
+start = time.time()
 kuwahara_filter_hsv[gridSize, blockSize](gpu_img, output_cuda_image_data, v, 8)
+# end timer
+end = time.time()
+print("Time taken for kuwahara in GPU: ", end - start)
 dst = output_cuda_image_data.copy_to_host()
-plt.imsave('cute-cat-kuwahara.jpg', dst)
+plt.imsave('cute-cat-kuwahara_gpu.jpg', dst)
 # display the image
 imgplot = plt.imshow(dst)
