@@ -52,7 +52,7 @@ def kuwahara_filter_hsv(src, dst, v, window_size):
     # first region  rx1 belongs to [tidx - window_size, tidx] and ry1 belongs to [tidy - window_size, tidy]
     sum1 = 0
     for rx1 in range(tidx - window_size, tidx): 
-        for ry1 in range(tidy - window_size, tidy + 1): 
+        for ry1 in range(tidy - window_size, tidy): 
             if rx1 >= 0 and ry1 >= 0 and rx1 < h and ry1 < w:
                 sum1 += v[rx1, ry1]
     # find standard deviation of first region
