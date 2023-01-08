@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 import time
 import math
+import numba
 
 # get the image
 root = mpimg.imread('cute-cat.jpg')
@@ -47,6 +48,11 @@ def kuwahara_filter_hsv_with_shared_memory(src, dst, v, window_size):
     # convert image to hsv color space with shared memory
     tidx = cuda.threadIdx.x + cuda.blockIdx.x * cuda.blockDim.x
     tidy = cuda.threadIdx.y + cuda.blockIdx.y * cuda.blockDim.y
-    h, w = src.shape[0], src.shape[1]
+    h, w = src.shape[0], src.shape[1]   
+    # shared memory
+    s = cuda.shared.array(shape=(0, 0), dtype=numba.float32)
+    s[tidx, tidy] = v[tidx, tidy]
+    cuda.syncthreads()
 
     
+
